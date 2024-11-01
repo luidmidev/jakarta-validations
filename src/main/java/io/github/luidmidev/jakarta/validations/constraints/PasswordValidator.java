@@ -4,6 +4,7 @@ import io.github.luidmidev.jakarta.validations.Password;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.passay.*;
+import org.springframework.cglib.core.Local;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +18,13 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     private static final Properties DEFAULT_PROPERTIES = new Properties();
     private static final String RESOURCE_PREFIX = "passay";
     private static Supplier<Locale> locale = Locale::getDefault;
+    private static final Locale[] availableLocales = Locale.getAvailableLocales();
 
     private List<? extends Rule> rules;
 
     static {
         try {
-            for (Locale locale : Locale.getAvailableLocales()) {
+            for (Locale locale : availableLocales) {
 
                 var inputStream = loadResource(RESOURCE_PREFIX + "_" + locale.getLanguage() + ".properties");
                 if (inputStream == null) continue;

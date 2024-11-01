@@ -9,11 +9,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 public final class Validations {
 
     private static final Tika TIKA = new Tika();
+    private static final List<String> ISO_COUNTRIES = Arrays.stream(Locale.getISOCountries()).toList();
 
     private Validations() {
         throw new IllegalStateException("Utility class");
@@ -81,9 +83,12 @@ public final class Validations {
         return value >= min && value <= max;
     }
 
-
-    public static <T> boolean isValidFileSize(long fileSize, float maxFileSize, FileSize.Unit unit) {
+    public static boolean isValidFileSize(long fileSize, float maxFileSize, FileSize.Unit unit) {
         return valueBetween(fileSize, 0, maxFileSize * unit.multiplier());
+    }
+
+    public static boolean isValidISOCountry(String isoCode) {
+        return ISO_COUNTRIES.contains(isoCode);
     }
 
 
