@@ -1,14 +1,13 @@
-package io.github.luidmidev.jakarta.validations.constraints;
+package io.github.luidmidev.jakarta.validations.constraints.filesize;
 
 import io.github.luidmidev.jakarta.validations.FileSize;
 import io.github.luidmidev.jakarta.validations.Validations;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 
-
-public class FileSizeConstraintValidator implements ConstraintValidator<FileSize, File> {
+public class FileSizeValidatorForMultipartFile implements ConstraintValidator<FileSize, MultipartFile> {
 
     private float maxFileSize;
     private FileSize.Unit unit;
@@ -20,16 +19,8 @@ public class FileSizeConstraintValidator implements ConstraintValidator<FileSize
     }
 
     @Override
-    public boolean isValid(File file, ConstraintValidatorContext context) {
-        return Validations.isValidFileSize(
-                file,
-                context,
-                maxFileSize,
-                unit,
-                File::length,
-                File::getName
-        );
+    public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+        return Validations.isValidFileSize(file.getSize(), maxFileSize, unit);
     }
-
 
 }

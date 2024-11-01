@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class PasswordConstraintValidator implements ConstraintValidator<Password, String> {
+public class PasswordValidator implements ConstraintValidator<Password, String> {
 
     private static final Map<Locale, Properties> PROPERTIES = new HashMap<>();
     private static final Properties DEFAULT_PROPERTIES = new Properties();
@@ -43,11 +43,11 @@ public class PasswordConstraintValidator implements ConstraintValidator<Password
     }
 
     private static InputStream loadResource(String constraintAnnotation) {
-        return PasswordConstraintValidator.class.getClassLoader().getResourceAsStream(constraintAnnotation);
+        return PasswordValidator.class.getClassLoader().getResourceAsStream(constraintAnnotation);
     }
 
     public static void setLocaleResolver(Supplier<Locale> locale) {
-        PasswordConstraintValidator.locale = locale;
+        PasswordValidator.locale = locale;
     }
 
     @Override
@@ -59,15 +59,15 @@ public class PasswordConstraintValidator implements ConstraintValidator<Password
         }
     }
 
-    private PasswordValidator buildPassswordValidator() {
+    private org.passay.PasswordValidator buildPassswordValidator() {
         var props = PROPERTIES.getOrDefault(locale.get(), DEFAULT_PROPERTIES);
-        return new PasswordValidator(new PropertiesMessageResolver(props), rules);
+        return new org.passay.PasswordValidator(new PropertiesMessageResolver(props), rules);
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        PasswordValidator validator = buildPassswordValidator();
+        org.passay.PasswordValidator validator = buildPassswordValidator();
 
         PasswordData passwordData = new PasswordData(value == null ? "" : value);
         RuleResult result = validator.validate(passwordData);

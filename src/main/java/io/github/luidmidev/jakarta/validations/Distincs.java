@@ -1,6 +1,7 @@
 package io.github.luidmidev.jakarta.validations;
 
-import io.github.luidmidev.jakarta.validations.constraints.DistincsConstraintValidator;
+import io.github.luidmidev.jakarta.validations.constraints.distincs.DistincsValidatorForArrays;
+import io.github.luidmidev.jakarta.validations.constraints.distincs.DistincsValidatorForCollections;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -12,7 +13,10 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = DistincsConstraintValidator.class)
+@Constraint(validatedBy = {
+        DistincsValidatorForCollections.class,
+        DistincsValidatorForArrays.class
+})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 public @interface Distincs {

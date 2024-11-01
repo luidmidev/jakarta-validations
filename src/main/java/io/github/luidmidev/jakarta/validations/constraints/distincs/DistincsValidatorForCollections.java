@@ -1,16 +1,17 @@
-package io.github.luidmidev.jakarta.validations.constraints;
+package io.github.luidmidev.jakarta.validations.constraints.distincs;
 
 
 import io.github.luidmidev.jakarta.validations.Distincs;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.util.List;
+import java.util.Collection;
 
-public class DistincsConstraintValidator implements ConstraintValidator<Distincs, List<?>> {
+
+public class DistincsValidatorForCollections implements ConstraintValidator<Distincs, Collection<?>> {
 
     @Override
-    public boolean isValid(List<?> value, ConstraintValidatorContext context) {
+    public boolean isValid(Collection<?> value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }

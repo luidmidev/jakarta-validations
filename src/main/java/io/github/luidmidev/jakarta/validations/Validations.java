@@ -1,23 +1,14 @@
 package io.github.luidmidev.jakarta.validations;
 
-import io.github.luidmidev.jakarta.validations.structs.ThrowableFunction;
-import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.ToLongFunction;
 import java.util.stream.IntStream;
 
 public final class Validations {
@@ -64,13 +55,10 @@ public final class Validations {
         return Arrays.asList(expectedContentTypes).contains(contentType);
     }
 
-    public static boolean isValidURL(String url) {
-        try {
-            new URL(url).toURI();
-            return true;
-        } catch (MalformedURLException | URISyntaxException e) {
-            return false;
-        }
+    public static boolean isValidContentType(byte[] file, String[] expectedContentTypes) {
+        if (file == null) return false;
+        var contentType = TIKA.detect(file);
+        return Arrays.asList(expectedContentTypes).contains(contentType);
     }
 
     public static boolean isNullOrEmpty(String value) {
@@ -94,36 +82,8 @@ public final class Validations {
     }
 
 
-    public static <T> boolean isValidContenType(T file, ConstraintValidatorContext context, String[] allowedContentTypes, Function<T, String> fileName, ThrowableFunction<T, InputStream, IOException> inputStream) throws IOException {
-        if (file == null) return true;
-
-        var bytes = IOUtils.toByteArray(inputStream.apply(file));
-        var name = fileName.apply(file);
-        var contentType = TIKA.detect(bytes, name);
-
-        if (!Arrays.asList(allowedContentTypes).contains(contentType)) {
-            if (context instanceof ConstraintValidatorContextImpl c) {
-                c.addMessageParameter("fileName", name);
-                c.addMessageParameter("expectedContentTypes", allowedContentTypes);
-                c.addMessageParameter("contentType", contentType);
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    public static <T> boolean isValidFileSize(T file, ConstraintValidatorContext context, float maxFileSize, FileSize.Unit unit, ToLongFunction<T> fileSize, Function<T, String> fileName) {
-        if (file == null) return true;
-        if (!valueBetween(fileSize.applyAsLong(file), 0, maxFileSize * unit.multiplier())) {
-            if (context instanceof ConstraintValidatorContextImpl c) {
-                c.addMessageParameter("fileName", fileName.apply(file));
-                c.addMessageParameter("maxFileSize", maxFileSize);
-            }
-            return false;
-        }
-
-        return true;
+    public static <T> boolean isValidFileSize(long fileSize, float maxFileSize, FileSize.Unit unit) {
+        return valueBetween(fileSize, 0, maxFileSize * unit.multiplier());
     }
 
 

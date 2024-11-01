@@ -1,12 +1,12 @@
 package io.github.luidmidev.jakarta.validations.constraints;
 
 
-import io.github.luidmidev.jakarta.validations.Ci;
+import io.github.luidmidev.jakarta.validations.EquatorCi;
 import io.github.luidmidev.jakarta.validations.Validations;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class CiConstraintValidator implements ConstraintValidator<Ci, String> {
+public class EquatorCiValidator implements ConstraintValidator<EquatorCi, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext context) {

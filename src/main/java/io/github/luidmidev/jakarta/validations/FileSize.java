@@ -1,7 +1,7 @@
 package io.github.luidmidev.jakarta.validations;
 
-import io.github.luidmidev.jakarta.validations.constraints.FileSizeConstraintValidator;
-import io.github.luidmidev.jakarta.validations.constraints.MultipartFileSizeConstraintValidator;
+import io.github.luidmidev.jakarta.validations.constraints.filesize.FileSizeValidatorForFile;
+import io.github.luidmidev.jakarta.validations.constraints.filesize.FileSizeValidatorForMultipartFile;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
 @Constraint(validatedBy = {
-        MultipartFileSizeConstraintValidator.class,
-        FileSizeConstraintValidator.class,
+        FileSizeValidatorForMultipartFile.class,
+        FileSizeValidatorForFile.class,
 })
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
