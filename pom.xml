@@ -6,7 +6,7 @@
 
     <groupId>io.github.luidmidev</groupId>
     <artifactId>jakarta-validations</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.4</version>
 
     <description>
         Jakarta Validations Library by LuidmiDev
@@ -97,7 +97,6 @@
         </dependency>
 
     </dependencies>
-
 
     <build>
         <plugins>

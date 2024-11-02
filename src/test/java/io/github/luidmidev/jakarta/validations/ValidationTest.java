@@ -24,7 +24,7 @@ public class ValidationTest {
         var exampleModel = ExampleModel.builder()
                 .value(null)
                 .ci("1234567890")
-                .file1(new File("files/file2.pdf"))
+                .image(new File("files/file1.jpeg"))
                 .files(List.of(
                         new File("files/file1.jpeg"),
                         new File("files/file2.pdf")
@@ -67,8 +67,8 @@ public class ValidationTest {
         @EquatorCi
         private String ci;
 
-        @ContentType(value = {"image/png", "image/jpeg"})
-        private File file1;
+        @Image(width = 1871, height = 1323 + 1, dimensionValidation = Image.DimensionConstraint.EXACT)
+        private File image;
 
         private List<@ContentType("image/png") @FileSize(value = 2f, unit = FileSize.Unit.B) File> files;
 

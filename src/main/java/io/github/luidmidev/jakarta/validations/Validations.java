@@ -4,6 +4,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,20 +49,50 @@ public final class Validations {
         var bytes = IOUtils.toByteArray(file.getInputStream());
         var contentType = TIKA.detect(bytes, file.getOriginalFilename());
 
-        return Arrays.asList(expectedContentTypes).contains(contentType);
+        return matchesContentType(contentType, expectedContentTypes);
     }
 
     public static boolean isValidContentType(File file, String[] expectedContentTypes) throws IOException {
         if (file == null) return false;
         var bytes = IOUtils.toByteArray(new FileInputStream(file));
         var contentType = TIKA.detect(bytes, file.getName());
-        return Arrays.asList(expectedContentTypes).contains(contentType);
+        return matchesContentType(contentType, expectedContentTypes);
     }
 
     public static boolean isValidContentType(byte[] file, String[] expectedContentTypes) {
         if (file == null) return false;
         var contentType = TIKA.detect(file);
-        return Arrays.asList(expectedContentTypes).contains(contentType);
+        return matchesContentType(contentType, expectedContentTypes);
+    }
+
+    private static boolean matchesContentType(String contentType, String[] expectedContentTypes) {
+        for (var expected : expectedContentTypes) {
+            if (expected.equals(contentType) || (expected.endsWith("/*") && contentType.startsWith(expected.replace("/*", "/")))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Valida si la imagen cumple con las dimensiones especificadas.
+     *
+     * @param imageFile El archivo de la imagen a validar.
+     * @param maxWidth  El ancho máximo permitido.
+     * @param maxHeight La altura máxima permitida.
+     * @return true si la imagen cumple con las dimensiones, false en caso contrario.
+     * @throws IOException Si ocurre un error al leer la imagen.
+     */
+    public static boolean isValidImageSize(File imageFile, int maxWidth, int maxHeight) throws IOException {
+        BufferedImage image = ImageIO.read(imageFile);
+        if (image == null) {
+            throw new IOException("El archivo no es una imagen válida.");
+        }
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        return width <= maxWidth && height <= maxHeight;
     }
 
     public static boolean isNullOrEmpty(String value) {
@@ -90,6 +122,4 @@ public final class Validations {
     public static boolean isValidISOCountry(String isoCode) {
         return ISO_COUNTRIES.contains(isoCode);
     }
-
-
 }

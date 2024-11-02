@@ -5,6 +5,7 @@ import io.github.luidmidev.jakarta.validations.constraints.contenttype.ContentTy
 import io.github.luidmidev.jakarta.validations.constraints.contenttype.ContentTypeValidatorForMultipartFile;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import jakarta.validation.constraints.Size;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -30,5 +31,4 @@ public @interface ContentType {
     Class<? extends Payload>[] payload() default {};
 
     String[] value();
-
 }

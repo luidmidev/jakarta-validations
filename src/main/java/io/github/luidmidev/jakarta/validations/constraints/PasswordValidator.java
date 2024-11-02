@@ -4,11 +4,12 @@ import io.github.luidmidev.jakarta.validations.Password;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.passay.*;
-import org.springframework.cglib.core.Local;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -30,13 +31,13 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
                 if (inputStream == null) continue;
 
                 Properties props = new Properties();
-                props.load(inputStream);
+                props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                 PROPERTIES.put(locale, props);
 
             }
 
             var inputStream = loadResource(RESOURCE_PREFIX + ".properties");
-            DEFAULT_PROPERTIES.load(inputStream);
+            DEFAULT_PROPERTIES.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
 
         } catch (IOException e) {
@@ -78,29 +79,10 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
         context.disableDefaultConstraintViolation();
 
-        for (String message : validator.getMessages(result)) {
+        for (var message : validator.getMessages(result)) {
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
         }
 
         return false;
     }
-
-    static final Random random = new Random();
-    static final String UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
-    static final String DIGITS = "0123456789";
-    static final String SPECIAL = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-    static final String ALPHABET = UPPER_CASE + LOWER_CASE;
-    static final List<String> list = List.of(UPPER_CASE, LOWER_CASE, DIGITS, SPECIAL, ALPHABET);
-
-    public static String generateStrongPassword() {
-        var password = new StringBuilder();
-        for (int i = 0; i < 25; i++) {
-            var index = random.nextInt(list.size());
-            var character = list.get(index).charAt(random.nextInt(list.get(index).length()));
-            password.append(character);
-        }
-        return password.toString();
-    }
-
 }
