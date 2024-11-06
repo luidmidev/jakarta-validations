@@ -1,6 +1,7 @@
 package io.github.luidmidev.jakarta.validations.constraints;
 
 import io.github.luidmidev.jakarta.validations.Password;
+import io.github.luidmidev.jakarta.validations.utils.LocaleContext;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.passay.*;
@@ -11,14 +12,12 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
     private static final Map<Locale, Properties> PROPERTIES = new HashMap<>();
     private static final Properties DEFAULT_PROPERTIES = new Properties();
     private static final String RESOURCE_PREFIX = "passay";
-    private static Supplier<Locale> locale = Locale::getDefault;
     private static final Locale[] availableLocales = Locale.getAvailableLocales();
 
     private List<? extends Rule> rules;
@@ -30,7 +29,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
                 var inputStream = loadResource(RESOURCE_PREFIX + "_" + locale.getLanguage() + ".properties");
                 if (inputStream == null) continue;
 
-                Properties props = new Properties();
+                var props = new Properties();
                 props.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                 PROPERTIES.put(locale, props);
 
@@ -49,9 +48,6 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         return PasswordValidator.class.getClassLoader().getResourceAsStream(constraintAnnotation);
     }
 
-    public static void setLocaleResolver(Supplier<Locale> locale) {
-        PasswordValidator.locale = locale;
-    }
 
     @Override
     public void initialize(Password password) {
@@ -63,7 +59,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     }
 
     private org.passay.PasswordValidator buildPassswordValidator() {
-        var props = PROPERTIES.getOrDefault(locale.get(), DEFAULT_PROPERTIES);
+        var props = PROPERTIES.getOrDefault(LocaleContext.getLocale(), DEFAULT_PROPERTIES);
         return new org.passay.PasswordValidator(new PropertiesMessageResolver(props), rules);
     }
 

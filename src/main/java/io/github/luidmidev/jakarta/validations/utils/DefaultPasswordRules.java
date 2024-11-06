@@ -1,4 +1,4 @@
-package io.github.luidmidev.jakarta.validations.structs;
+package io.github.luidmidev.jakarta.validations.utils;
 
 import org.passay.CharacterRule;
 import org.passay.LengthRule;

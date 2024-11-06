@@ -1,5 +1,8 @@
 package io.github.luidmidev.jakarta.validations;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import io.github.luidmidev.jakarta.validations.utils.LocaleContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.springframework.web.multipart.MultipartFile;
@@ -122,4 +125,21 @@ public final class Validations {
     public static boolean isValidISOCountry(String isoCode) {
         return ISO_COUNTRIES.contains(isoCode);
     }
+
+    public static boolean isMobileNumberValid(String phoneNumber, String defaultRegion) {
+        try {
+            var phoneUtil = PhoneNumberUtil.getInstance();
+            var swissNumberProto = phoneUtil.parse(phoneNumber, defaultRegion);
+            //String regionCode = phoneUtil.getRegionCodeForNumber(swissNumberProto);
+            return phoneUtil.isValidNumber(swissNumberProto);
+        } catch (NumberParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean isMobileNumberValid(String phoneNumber) {
+        return isMobileNumberValid(phoneNumber, LocaleContext.getLocale().getCountry());
+    }
+
+
 }

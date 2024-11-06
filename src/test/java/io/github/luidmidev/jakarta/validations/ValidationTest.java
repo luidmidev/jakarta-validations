@@ -1,10 +1,12 @@
 package io.github.luidmidev.jakarta.validations;
 
-import io.github.luidmidev.jakarta.validations.structs.DefaultPasswordRules;
+import io.github.luidmidev.jakarta.validations.utils.DefaultPasswordRules;
+import io.github.luidmidev.jakarta.validations.utils.TemplateEvaluator;
 import jakarta.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
@@ -14,7 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 
 public class ValidationTest {
@@ -38,6 +42,7 @@ public class ValidationTest {
                         .values(List.of("value1", "", "value1"))
                         .build()
                 )
+                .startsWithA("A")
                 .build();
 
         try (
@@ -56,6 +61,64 @@ public class ValidationTest {
 
     }
 
+
+    @Test
+    public void validPhoneNumber() {
+        var phoneNumber = "+1 (415)-555-2671";
+        Assertions.assertTrue(Validations.isMobileNumberValid(phoneNumber));
+    }
+
+    @Test
+    void templateEvaluator0() {
+        var parameters = Map.of("customer", new Customer("John"));
+        String template = "Hello, ${customer.getName() == 'John' ? 'The John' : 'The other'}";
+        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
+        System.out.println(result);
+    }
+
+    @Test
+    void templateEvaluator1() {
+        var parameters = Map.of("gen", Gender.MA);
+        String template = "Hello, ${gen == 'MA' ? 'Mr.' : 'Mrs.'}";
+        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
+        System.out.println(result);
+    }
+
+    @Test
+    void templateEvaluator2() {
+        var parameters = Map.of("map", Map.of("key", "value2"));
+        String template = "Hello, ${map['key']}";
+        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
+        System.out.println(result);
+    }
+
+    @Test
+    void templateEvaluator3() {
+        var parameters = Map.of("call", (Function<String, String>) String::toUpperCase);
+        String template = "Hello, ${call.apply('hello')}";
+        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
+        System.out.println(result);
+    }
+
+    @Test
+    void templateEvaluator4() {
+        var parameters = Map.of("call", (Function<String, String>) String::trim);
+        String template = "Hello, ${call.apply(' hello ')}";
+        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
+        System.out.println(result);
+    }
+
+
+    public enum Gender {
+        MA,
+        FE
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class Customer {
+        private String name;
+    }
 
     @Data
     @Builder
@@ -83,6 +146,10 @@ public class ValidationTest {
         @NotNull
         @Valid
         private ExampleSubModel subModel;
+
+        @NotBlank
+        @Condition(condition = "value.startsWith('A')", message = "Value must start with A")
+        private String startsWithA;
     }
 
     @Data
