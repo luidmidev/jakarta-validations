@@ -21,6 +21,9 @@ public class FileSizeValidatorForFile implements ConstraintValidator<FileSize, F
 
     @Override
     public boolean isValid(File file, ConstraintValidatorContext context) {
+        if (file == null) {
+            return true;
+        }
         return Validations.isValidFileSize(file.length(), maxFileSize, unit);
     }
 }

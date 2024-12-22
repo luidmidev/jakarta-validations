@@ -65,10 +65,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) return true;
 
         org.passay.PasswordValidator validator = buildPassswordValidator();
 
-        PasswordData passwordData = new PasswordData(value == null ? "" : value);
+        PasswordData passwordData = new PasswordData(value);
         RuleResult result = validator.validate(passwordData);
 
         if (result.isValid()) return true;
