@@ -21,6 +21,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     private static final Locale[] availableLocales = Locale.getAvailableLocales();
 
     private List<? extends Rule> rules;
+    private String defaultMessage;
 
     static {
         try {
@@ -53,7 +54,9 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     public void initialize(Password password) {
         try {
             rules = password.value().getDeclaredConstructor().newInstance().get();
-        } catch (InstantiationException | SecurityException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            defaultMessage = password.message();
+        } catch (InstantiationException | SecurityException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
             throw new IllegalArgumentException("Invalid rule configuration", e);
         }
     }
@@ -67,17 +70,20 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) return true;
 
-        org.passay.PasswordValidator validator = buildPassswordValidator();
+        var validator = buildPassswordValidator();
 
-        PasswordData passwordData = new PasswordData(value);
-        RuleResult result = validator.validate(passwordData);
+        var passwordData = new PasswordData(value);
+        var result = validator.validate(passwordData);
 
         if (result.isValid()) return true;
 
-        context.disableDefaultConstraintViolation();
 
-        for (var message : validator.getMessages(result)) {
-            context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
+        if (defaultMessage.isEmpty()) {
+            context.disableDefaultConstraintViolation();
+            for (var validationMessage : validator.getMessages(result)) {
+                context.buildConstraintViolationWithTemplate(validationMessage).addConstraintViolation();
+            }
+            return false;
         }
 
         return false;

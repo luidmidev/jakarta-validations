@@ -21,10 +21,11 @@ import java.util.Set;
 import java.util.function.Function;
 
 
-public class ValidationTest {
+
+class ValidationTest {
 
     @Test
-    public void test() {
+    void test() {
         var exampleModel = ExampleModel.builder()
                 .value(null)
                 .ci("1234567890")
@@ -63,7 +64,7 @@ public class ValidationTest {
 
 
     @Test
-    public void validPhoneNumber() {
+    void validPhoneNumber() {
         var phoneNumber = "+1 (415)-555-2671";
         Assertions.assertTrue(Validations.isMobileNumberValid(phoneNumber));
     }
