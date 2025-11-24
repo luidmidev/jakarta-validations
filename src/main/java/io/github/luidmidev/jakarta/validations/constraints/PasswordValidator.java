@@ -9,9 +9,11 @@ import org.passay.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
@@ -23,9 +25,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     private List<? extends Rule> rules;
     private String defaultMessage;
 
+    private static final Map<Class<? extends Supplier<List<? extends Rule>>>, List<? extends Rule>> RULES_CACHE = new ConcurrentHashMap<>();
+
     static {
         try {
-            for (Locale locale : availableLocales) {
+            for (var locale : availableLocales) {
 
                 var inputStream = loadResource(RESOURCE_PREFIX + "_" + locale.getLanguage() + ".properties");
                 if (inputStream == null) continue;
@@ -52,13 +56,19 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public void initialize(Password password) {
-        try {
-            rules = password.value().getDeclaredConstructor().newInstance().get();
-            defaultMessage = password.message();
-        } catch (InstantiationException | SecurityException | NoSuchMethodException | IllegalAccessException |
-                 InvocationTargetException e) {
-            throw new IllegalArgumentException("Invalid rule configuration", e);
-        }
+        var clazz = password.value();
+        rules = RULES_CACHE.computeIfAbsent(clazz, new Function<>() {
+            @Override
+            public List<? extends Rule> apply(Class<? extends Supplier<List<? extends Rule>>> key) {
+                try {
+                    return key.getDeclaredConstructor().newInstance().get();
+                } catch (Exception e) {
+                    throw new RuntimeException("Error creating password rules supplier", e);
+                }
+            }
+        });
+        defaultMessage = password.message();
+
     }
 
     private org.passay.PasswordValidator buildPassswordValidator() {

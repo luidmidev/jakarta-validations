@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface Adult {
     String message() default "{my.validation.constraints.Adult.message}";
 
-    int min() default 18;
+    int minAge() default 18;
 
     Class<?>[] groups() default {};
 

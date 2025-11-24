@@ -22,6 +22,10 @@ public final class Validations {
     private static final Tika TIKA = new Tika();
     private static final List<String> ISO_COUNTRIES = Arrays.stream(Locale.getISOCountries()).toList();
 
+    static {
+        ISO_COUNTRIES.forEach(country -> System.out.println("country = " + country));
+    }
+
     private Validations() {
         throw new IllegalStateException("Utility class");
     }

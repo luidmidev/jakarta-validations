@@ -4,7 +4,6 @@ import io.github.luidmidev.jakarta.validations.constraints.filesize.FileSizeVali
 import io.github.luidmidev.jakarta.validations.constraints.filesize.FileSizeValidatorForMultipartFile;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import lombok.RequiredArgsConstructor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -32,7 +31,6 @@ public @interface FileSize {
 
     Unit unit() default Unit.B;
 
-    @RequiredArgsConstructor
     enum Unit {
         B(1, "B"),
         KB(1_024L, "KB"),
@@ -42,6 +40,11 @@ public @interface FileSize {
 
         private final long multiplier;
         private final String abbreviation;
+
+        Unit(long multiplier, String abbreviation) {
+            this.multiplier = multiplier;
+            this.abbreviation = abbreviation;
+        }
 
         public long multiplier() {
             return multiplier;

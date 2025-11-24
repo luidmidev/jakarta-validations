@@ -3,14 +3,19 @@ package io.github.luidmidev.jakarta.validations.utils;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-public class LocaleContext {
-    private static Supplier<Locale> LOCALE_SUPPLIER = Locale::getDefault;
+public final class LocaleContext {
+
+    private LocaleContext() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    private static Supplier<Locale> localeSupplier = Locale::getDefault;
 
     public static void setLocaleSupplier(Supplier<Locale> localeSupplier) {
-        LocaleContext.LOCALE_SUPPLIER = localeSupplier;
+        LocaleContext.localeSupplier = localeSupplier;
     }
 
     public static Locale getLocale() {
-        return LOCALE_SUPPLIER.get();
+        return localeSupplier.get();
     }
 }

@@ -4,9 +4,9 @@ import io.github.luidmidev.jakarta.validations.ContentType;
 import io.github.luidmidev.jakarta.validations.Validations;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.SneakyThrows;
 
 import java.io.File;
+import java.io.IOException;
 
 public class ContentTypeValidatorForFile implements ConstraintValidator<ContentType, File> {
 
@@ -17,10 +17,13 @@ public class ContentTypeValidatorForFile implements ConstraintValidator<ContentT
         this.allowedContentTypes = constraintAnnotation.value();
     }
 
-    @SneakyThrows
     @Override
     public boolean isValid(File file, ConstraintValidatorContext context) {
         if (file == null) return true;
-        return Validations.isValidContentType(file, allowedContentTypes);
+        try {
+            return Validations.isValidContentType(file, allowedContentTypes);
+        } catch (IOException e) {
+            throw new RuntimeException("Error validating content type", e);
+        }
     }
 }

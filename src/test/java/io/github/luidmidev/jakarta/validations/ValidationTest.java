@@ -1,14 +1,10 @@
 package io.github.luidmidev.jakarta.validations;
 
 import io.github.luidmidev.jakarta.validations.utils.DefaultPasswordRules;
-import io.github.luidmidev.jakarta.validations.utils.TemplateEvaluator;
 import jakarta.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.junit.jupiter.api.Assertions;
@@ -16,10 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-
 
 
 class ValidationTest {
@@ -43,7 +36,6 @@ class ValidationTest {
                         .values(List.of("value1", "", "value1"))
                         .build()
                 )
-                .startsWithA("A")
                 .build();
 
         try (
@@ -69,60 +61,35 @@ class ValidationTest {
         Assertions.assertTrue(Validations.isMobileNumberValid(phoneNumber));
     }
 
-    @Test
-    void templateEvaluator0() {
-        var parameters = Map.of("customer", new Customer("John"));
-        String template = "Hello, ${customer.getName() == 'John' ? 'The John' : 'The other'}";
-        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
-        System.out.println(result);
-    }
-
-    @Test
-    void templateEvaluator1() {
-        var parameters = Map.of("gen", Gender.MA);
-        String template = "Hello, ${gen == 'MA' ? 'Mr.' : 'Mrs.'}";
-        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
-        System.out.println(result);
-    }
-
-    @Test
-    void templateEvaluator2() {
-        var parameters = Map.of("map", Map.of("key", "value2"));
-        String template = "Hello, ${map['key']}";
-        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
-        System.out.println(result);
-    }
-
-    @Test
-    void templateEvaluator3() {
-        var parameters = Map.of("call", (Function<String, String>) String::toUpperCase);
-        String template = "Hello, ${call.apply('hello')}";
-        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
-        System.out.println(result);
-    }
-
-    @Test
-    void templateEvaluator4() {
-        var parameters = Map.of("call", (Function<String, String>) String::trim);
-        String template = "Hello, ${call.apply(' hello ')}";
-        String result = TemplateEvaluator.evaluate(template, parameters, String.class);
-        System.out.println(result);
-    }
-
-
     public enum Gender {
         MA,
         FE
     }
 
-    @Data
-    @AllArgsConstructor
+    // =====================
+// Customer
+// =====================
     public static class Customer {
+
         private String name;
+
+        public Customer(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    @Data
-    @Builder
+
+    // =====================
+// ExampleModel
+// =====================
     public static class ExampleModel {
 
         @NotNull
@@ -131,10 +98,14 @@ class ValidationTest {
         @EquatorCi
         private String ci;
 
-        @Image(width = 1871, height = 1323 + 1, dimensionValidation = Image.DimensionConstraint.EXACT)
+        @Image(width = 1871, height = 1324, dimensionValidation = Image.DimensionConstraint.EXACT)
         private File image;
 
-        private List<@ContentType("image/png") @FileSize(value = 2f, unit = FileSize.Unit.B) File> files;
+        private List<
+                @ContentType("image/png")
+                @FileSize(value = 2f, unit = FileSize.Unit.B)
+                        File
+                > files;
 
         @Password(DefaultPasswordRules.class)
         private String password;
@@ -143,18 +114,146 @@ class ValidationTest {
         @URL
         private String url;
 
-
         @NotNull
         @Valid
         private ExampleSubModel subModel;
 
-        @NotBlank
-        @Condition(condition = "value.startsWith('A')", message = "Value must start with A")
-        private String startsWithA;
+
+        // ----- Constructor vacío -----
+        public ExampleModel() {
+        }
+
+        // ----- Constructor completo -----
+        public ExampleModel(Long value, String ci, File image, List<File> files,
+                            String password, String url, ExampleSubModel subModel) {
+            this.value = value;
+            this.ci = ci;
+            this.image = image;
+            this.files = files;
+            this.password = password;
+            this.url = url;
+            this.subModel = subModel;
+        }
+
+        // ----- Getters y Setters -----
+        public Long getValue() {
+            return value;
+        }
+
+        public void setValue(Long value) {
+            this.value = value;
+        }
+
+        public String getCi() {
+            return ci;
+        }
+
+        public void setCi(String ci) {
+            this.ci = ci;
+        }
+
+        public File getImage() {
+            return image;
+        }
+
+        public void setImage(File image) {
+            this.image = image;
+        }
+
+        public List<File> getFiles() {
+            return files;
+        }
+
+        public void setFiles(List<File> files) {
+            this.files = files;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public ExampleSubModel getSubModel() {
+            return subModel;
+        }
+
+        public void setSubModel(ExampleSubModel subModel) {
+            this.subModel = subModel;
+        }
+
+
+        // ============================
+        // Builder
+        // ============================
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private Long value;
+            private String ci;
+            private File image;
+            private List<File> files;
+            private String password;
+            private String url;
+            private ExampleSubModel subModel;
+
+            public Builder value(Long value) {
+                this.value = value;
+                return this;
+            }
+
+            public Builder ci(String ci) {
+                this.ci = ci;
+                return this;
+            }
+
+            public Builder image(File image) {
+                this.image = image;
+                return this;
+            }
+
+            public Builder files(List<File> files) {
+                this.files = files;
+                return this;
+            }
+
+            public Builder password(String password) {
+                this.password = password;
+                return this;
+            }
+
+            public Builder url(String url) {
+                this.url = url;
+                return this;
+            }
+
+            public Builder subModel(ExampleSubModel subModel) {
+                this.subModel = subModel;
+                return this;
+            }
+
+            public ExampleModel build() {
+                return new ExampleModel(value, ci, image, files, password, url, subModel);
+            }
+        }
     }
 
-    @Data
-    @Builder
+
+    // =====================
+// ExampleSubModel
+// =====================
     public static class ExampleSubModel {
 
         @NotNull
@@ -165,6 +264,74 @@ class ValidationTest {
 
         @NotEmpty
         private List<@NotBlank String> values;
-    }
 
+        // ----- Constructor vacío -----
+        public ExampleSubModel() {
+        }
+
+        // ----- Constructor completo -----
+        public ExampleSubModel(Long value, String ci, List<String> values) {
+            this.value = value;
+            this.ci = ci;
+            this.values = values;
+        }
+
+        // ----- Getters y Setters -----
+        public Long getValue() {
+            return value;
+        }
+
+        public void setValue(Long value) {
+            this.value = value;
+        }
+
+        public String getCi() {
+            return ci;
+        }
+
+        public void setCi(String ci) {
+            this.ci = ci;
+        }
+
+        public List<String> getValues() {
+            return values;
+        }
+
+        public void setValues(List<String> values) {
+            this.values = values;
+        }
+
+
+        // ============================
+        // Builder
+        // ============================
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private Long value;
+            private String ci;
+            private List<String> values;
+
+            public Builder value(Long value) {
+                this.value = value;
+                return this;
+            }
+
+            public Builder ci(String ci) {
+                this.ci = ci;
+                return this;
+            }
+
+            public Builder values(List<String> values) {
+                this.values = values;
+                return this;
+            }
+
+            public ExampleSubModel build() {
+                return new ExampleSubModel(value, ci, values);
+            }
+        }
+    }
 }

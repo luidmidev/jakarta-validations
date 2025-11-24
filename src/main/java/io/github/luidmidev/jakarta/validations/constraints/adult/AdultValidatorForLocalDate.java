@@ -13,7 +13,7 @@ public class AdultValidatorForLocalDate implements ConstraintValidator<Adult, Lo
 
     @Override
     public void initialize(Adult constraintAnnotation) {
-        this.min = constraintAnnotation.min();
+        this.min = constraintAnnotation.minAge();
     }
 
     @Override

@@ -5,8 +5,7 @@ import io.github.luidmidev.jakarta.validations.constraints.dimensions.ImageValid
 import io.github.luidmidev.jakarta.validations.constraints.dimensions.ImageValidatorForMultipartFile;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -38,7 +37,6 @@ public @interface Image {
 
     DimensionConstraint dimensionValidation() default DimensionConstraint.NO_VALIDATION;
 
-    @RequiredArgsConstructor
     enum DimensionConstraint {
 
         MAX(args -> args.widthObtained <= args.widthExpected && args.heightObtained <= args.heightExpected),
@@ -53,11 +51,18 @@ public @interface Image {
 
         private final Function<ArgsDimensionValidation, Boolean> validationFuntion;
 
-        @Getter
         private final String message = "{my.validation.constraints.Image.DimensionValidation." + name() + ".message}";
+
+        DimensionConstraint(Function<ArgsDimensionValidation, Boolean> validationFuntion) {
+            this.validationFuntion = validationFuntion;
+        }
 
         public boolean isValid(long widthObtained, long widthExpected, long heightObtained, long heightExpected) {
             return validationFuntion.apply(new ArgsDimensionValidation(widthObtained, widthExpected, heightObtained, heightExpected));
+        }
+
+        public String getMessage() {
+            return message;
         }
     }
 
