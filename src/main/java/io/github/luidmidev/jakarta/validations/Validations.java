@@ -22,15 +22,11 @@ public final class Validations {
     private static final Tika TIKA = new Tika();
     private static final List<String> ISO_COUNTRIES = Arrays.stream(Locale.getISOCountries()).toList();
 
-    static {
-        ISO_COUNTRIES.forEach(country -> System.out.println("country = " + country));
-    }
-
     private Validations() {
         throw new IllegalStateException("Utility class");
     }
 
-    public static boolean isValidCi(String cedulaString) {
+    public static boolean isValidEcuCi(String cedulaString) {
         try {
             if (cedulaString == null) return false;
             if (cedulaString.length() != 10) return false;
@@ -53,17 +49,18 @@ public final class Validations {
 
     public static boolean isValidContentType(MultipartFile file, String[] expectedContentTypes) throws IOException {
         if (file == null) return false;
-        var bytes = IOUtils.toByteArray(file.getInputStream());
-        var contentType = TIKA.detect(bytes, file.getOriginalFilename());
-
-        return matchesContentType(contentType, expectedContentTypes);
+        try (var is = file.getInputStream()) {
+            var contentType = TIKA.detect(is, file.getOriginalFilename());
+            return matchesContentType(contentType, expectedContentTypes);
+        }
     }
 
     public static boolean isValidContentType(File file, String[] expectedContentTypes) throws IOException {
         if (file == null) return false;
-        var bytes = IOUtils.toByteArray(new FileInputStream(file));
-        var contentType = TIKA.detect(bytes, file.getName());
-        return matchesContentType(contentType, expectedContentTypes);
+        try (var fis = new FileInputStream(file)) {
+            var contentType = TIKA.detect(fis, file.getName());
+            return matchesContentType(contentType, expectedContentTypes);
+        }
     }
 
     public static boolean isValidContentType(byte[] file, String[] expectedContentTypes) {

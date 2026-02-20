@@ -1,6 +1,6 @@
 package io.github.luidmidev.jakarta.validations;
 
-import io.github.luidmidev.jakarta.validations.constraints.EquatorCiValidator;
+import io.github.luidmidev.jakarta.validations.constraints.EcuCiValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -12,10 +12,10 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = EquatorCiValidator.class)
+@Constraint(validatedBy = EcuCiValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
-public @interface EquatorCi {
+public @interface EcuCi {
 
     String message() default "{my.validation.constraints.EcuadorianIdentificationNumber.message}";
 

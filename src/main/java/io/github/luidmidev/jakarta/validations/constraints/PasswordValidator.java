@@ -1,6 +1,6 @@
 package io.github.luidmidev.jakarta.validations.constraints;
 
-import io.github.luidmidev.jakarta.validations.Password;
+import io.github.luidmidev.jakarta.validations.SafePassword;
 import io.github.luidmidev.jakarta.validations.utils.LocaleContext;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class PasswordValidator implements ConstraintValidator<Password, String> {
+public class PasswordValidator implements ConstraintValidator<SafePassword, String> {
 
     private static final Map<Locale, Properties> PROPERTIES = new HashMap<>();
     private static final Properties DEFAULT_PROPERTIES = new Properties();
@@ -55,8 +55,8 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
 
     @Override
-    public void initialize(Password password) {
-        var clazz = password.value();
+    public void initialize(SafePassword safePassword) {
+        var clazz = safePassword.value();
         rules = RULES_CACHE.computeIfAbsent(clazz, new Function<>() {
             @Override
             public List<? extends Rule> apply(Class<? extends Supplier<List<? extends Rule>>> key) {
@@ -67,7 +67,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
                 }
             }
         });
-        defaultMessage = password.message();
+        defaultMessage = safePassword.message();
 
     }
 

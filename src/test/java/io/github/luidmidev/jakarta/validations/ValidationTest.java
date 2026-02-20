@@ -95,7 +95,7 @@ class ValidationTest {
         @NotNull
         private Long value;
 
-        @EquatorCi
+        @EcuCi
         private String ci;
 
         @Image(width = 1871, height = 1324, dimensionValidation = Image.DimensionConstraint.EXACT)
@@ -107,7 +107,7 @@ class ValidationTest {
                         File
                 > files;
 
-        @Password(DefaultPasswordRules.class)
+        @SafePassword(DefaultPasswordRules.class)
         private String password;
 
         @NotBlank
@@ -259,7 +259,7 @@ class ValidationTest {
         @NotNull
         private Long value;
 
-        @EquatorCi
+        @EcuCi
         private String ci;
 
         @NotEmpty
