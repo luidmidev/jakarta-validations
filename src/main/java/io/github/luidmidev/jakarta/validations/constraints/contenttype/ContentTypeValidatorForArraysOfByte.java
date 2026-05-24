@@ -17,6 +17,6 @@ public class ContentTypeValidatorForArraysOfByte implements ConstraintValidator<
 
     @Override
     public boolean isValid(byte[] file, ConstraintValidatorContext context) {
-        return Validations.isValidContentType(file, allowedContentTypes);
+        return Validations.validContentType(file, allowedContentTypes);
     }
 }

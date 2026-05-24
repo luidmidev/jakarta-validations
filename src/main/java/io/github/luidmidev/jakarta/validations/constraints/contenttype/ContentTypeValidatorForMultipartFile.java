@@ -21,7 +21,7 @@ public class ContentTypeValidatorForMultipartFile implements ConstraintValidator
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
         try {
-            return Validations.isValidContentType(file, allowedContentTypes);
+            return Validations.validContentType(file, allowedContentTypes);
         } catch (IOException e) {
             throw new RuntimeException("Error validating content type", e);
         }

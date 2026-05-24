@@ -12,14 +12,12 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = {
-        NoProfanityValidator.class,
-})
+@Constraint(validatedBy = NoProfanityValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 public @interface NoProfanity {
 
-    String message() default "{my.validation.constraints.NoProfanity.message}";
+    String message() default "{io.github.luidmidev.jakarta.validations.NoProfanity.message}";
 
     Class<?>[] groups() default {};
 

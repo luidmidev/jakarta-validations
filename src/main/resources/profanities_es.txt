@@ -1,0 +1,42 @@
+# Spanish profanities — one entry per line, phrases allowed
+anal
+culo
+puta
+mierda
+coño
+verga
+pendejo
+bastardo
+cabron
+zorra
+picha
+maricón
+maricon
+gilipollas
+imbécil
+imbecil
+polla
+puto
+cabrón
+coger
+chinga
+culero
+naco
+mujerzuela
+cojon
+concha
+mamada
+putilla
+hijo de puta
+madre que te pario
+malparido
+pendejazo
+maldito
+carajo
+estúpido
+estupido
+hijueputa
+chingado
+pendejito
+cagón
+cagon

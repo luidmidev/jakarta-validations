@@ -24,6 +24,6 @@ public class FileSizeValidatorForFile implements ConstraintValidator<FileSize, F
         if (file == null) {
             return true;
         }
-        return Validations.isValidFileSize(file.length(), maxFileSize, unit);
+        return Validations.validFileSize(file.length(), maxFileSize, unit);
     }
 }

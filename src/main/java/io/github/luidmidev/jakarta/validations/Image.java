@@ -25,7 +25,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface Image {
 
-    String message() default "{my.validation.constraints.Image.message}";
+    String message() default "{io.github.luidmidev.jakarta.validations.Image.message}";
 
     Class<?>[] groups() default {};
 
@@ -51,7 +51,7 @@ public @interface Image {
 
         private final Function<ArgsDimensionValidation, Boolean> validationFuntion;
 
-        private final String message = "{my.validation.constraints.Image.DimensionValidation." + name() + ".message}";
+        private final String message = "{io.github.luidmidev.jakarta.validations.Image.DimensionConstraint." + name() + ".message}";
 
         DimensionConstraint(Function<ArgsDimensionValidation, Boolean> validationFuntion) {
             this.validationFuntion = validationFuntion;

@@ -21,7 +21,7 @@ public class ContentTypeValidatorForFile implements ConstraintValidator<ContentT
     public boolean isValid(File file, ConstraintValidatorContext context) {
         if (file == null) return true;
         try {
-            return Validations.isValidContentType(file, allowedContentTypes);
+            return Validations.validContentType(file, allowedContentTypes);
         } catch (IOException e) {
             throw new RuntimeException("Error validating content type", e);
         }

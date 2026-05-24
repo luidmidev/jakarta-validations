@@ -24,7 +24,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface ContentType {
 
-    String message() default "{my.validation.constraints.ContentType.message}";
+    String message() default "{io.github.luidmidev.jakarta.validations.ContentType.message}";
 
     Class<?>[] groups() default {};
 

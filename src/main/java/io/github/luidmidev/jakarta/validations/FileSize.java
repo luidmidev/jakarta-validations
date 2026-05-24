@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface FileSize {
 
-    String message() default "{my.validation.constraints.FileSize.message}";
+    String message() default "{io.github.luidmidev.jakarta.validations.FileSize.message}";
 
     Class<?>[] groups() default {};
 

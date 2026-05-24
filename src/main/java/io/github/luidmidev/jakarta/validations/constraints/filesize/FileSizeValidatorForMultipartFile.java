@@ -23,7 +23,7 @@ public class FileSizeValidatorForMultipartFile implements ConstraintValidator<Fi
         if (file == null) {
             return true;
         }
-        return Validations.isValidFileSize(file.getSize(), maxFileSize, unit);
+        return Validations.validFileSize(file.getSize(), maxFileSize, unit);
     }
 
 }

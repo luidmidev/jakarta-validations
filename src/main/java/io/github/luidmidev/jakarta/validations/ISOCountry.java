@@ -1,8 +1,6 @@
 package io.github.luidmidev.jakarta.validations;
 
 import io.github.luidmidev.jakarta.validations.constraints.ISOCountryValidator;
-import io.github.luidmidev.jakarta.validations.constraints.distincs.DistincsValidatorForArrays;
-import io.github.luidmidev.jakarta.validations.constraints.distincs.DistincsValidatorForCollections;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -14,14 +12,12 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = {
-        ISOCountryValidator.class,
-})
+@Constraint(validatedBy = ISOCountryValidator.class)
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
 @Retention(RUNTIME)
 public @interface ISOCountry {
 
-    String message() default "{my.validation.constraints.ISOCountry.message}";
+    String message() default "{io.github.luidmidev.jakarta.validations.ISOCountry.message}";
 
     Class<?>[] groups() default {};
 
