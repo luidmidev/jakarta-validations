@@ -21,8 +21,16 @@ import java.util.stream.IntStream;
 
 public final class Validations {
 
-    private static final Tika TIKA = new Tika();
     private static final Set<String> ISO_COUNTRIES = Arrays.stream(Locale.getISOCountries()).collect(Collectors.toUnmodifiableSet());
+
+    // Holders para dependencias opcionales — se inicializan solo al primer uso
+    private static final class TikaHolder {
+        static final Tika INSTANCE = new Tika();
+    }
+
+    private static final class PhoneNumberUtilHolder {
+        static final PhoneNumberUtil INSTANCE = PhoneNumberUtil.getInstance();
+    }
 
     // Coeficientes para validación de RUC
     private static final int[] COEFF_RUC_PUBLIC = {3, 2, 7, 6, 5, 4, 3, 2};
@@ -94,7 +102,7 @@ public final class Validations {
     public static boolean validContentType(MultipartFile file, String[] expectedContentTypes) throws IOException {
         if (file == null) return false;
         try (var is = file.getInputStream()) {
-            var contentType = TIKA.detect(is, file.getOriginalFilename());
+            var contentType = TikaHolder.INSTANCE.detect(is, file.getOriginalFilename());
             return matchesContentType(contentType, expectedContentTypes);
         }
     }
@@ -102,14 +110,14 @@ public final class Validations {
     public static boolean validContentType(File file, String[] expectedContentTypes) throws IOException {
         if (file == null) return false;
         try (var fis = new FileInputStream(file)) {
-            var contentType = TIKA.detect(fis, file.getName());
+            var contentType = TikaHolder.INSTANCE.detect(fis, file.getName());
             return matchesContentType(contentType, expectedContentTypes);
         }
     }
 
     public static boolean validContentType(byte[] prefix, String[] expectedContentTypes) {
         if (prefix == null) return false;
-        var contentType = TIKA.detect(prefix);
+        var contentType = TikaHolder.INSTANCE.detect(prefix);
         return matchesContentType(contentType, expectedContentTypes);
     }
 
@@ -189,10 +197,9 @@ public final class Validations {
 
     public static boolean phoneNumberValid(String phoneNumber, String defaultRegion) {
         try {
-            var phoneUtil = PhoneNumberUtil.getInstance();
-            var swissNumberProto = phoneUtil.parse(phoneNumber, defaultRegion);
-            //String regionCode = phoneUtil.getRegionCodeForNumber(swissNumberProto);
-            return phoneUtil.isValidNumber(swissNumberProto);
+            var phoneUtil = PhoneNumberUtilHolder.INSTANCE;
+            var parsed = phoneUtil.parse(phoneNumber, defaultRegion);
+            return phoneUtil.isValidNumber(parsed);
         } catch (NumberParseException e) {
             return false;
         }
